@@ -10,11 +10,18 @@ function createServer() {
     const normalizedPath =
       normalizedURL.pathname.replace(/^\/file\//, '') || 'index.html';
 
+    if (normalizedPath.includes('//')) {
+      res.statusCode = 404;
+      res.setHeader('Content-Type', 'text/plain');
+
+      return res.end('Paths have duplicated slashes');
+    }
+
     if (
       !normalizedURL.pathname.startsWith('/file') ||
       normalizedURL.pathname.includes('..')
     ) {
-      res.statusCode = 404;
+      res.statusCode = 400;
       res.setHeader('Content-Type', 'text/plain');
 
       return res.end('Invalid file path');
@@ -24,13 +31,6 @@ function createServer() {
       res.setHeader('Content-Type', 'text/plain');
 
       return res.end('Path should start with "/file/"');
-    }
-
-    if (normalizedPath.includes('//')) {
-      res.statusCode = 404;
-      res.setHeader('Content-Type', 'text/plain');
-
-      return res.end('Paths have duplicated slashes');
     }
 
     try {
