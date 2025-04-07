@@ -1,7 +1,7 @@
 'use strict';
 
-const http = require('http');
 const fsp = require('fs/promises');
+const http = require('http');
 const url = require('url');
 
 function createServer() {
