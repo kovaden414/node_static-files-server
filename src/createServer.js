@@ -14,7 +14,7 @@ function createServer() {
       !normalizedURL.pathname.startsWith('/file') ||
       normalizedURL.pathname.includes('..')
     ) {
-      res.statusCode = 400;
+      res.statusCode = 404;
       res.setHeader('Content-Type', 'text/plain');
 
       return res.end('Invalid file path');
