@@ -10,20 +10,7 @@ function createServer() {
     const normalizedPath =
       normalizedURL.pathname.replace(/^\/file\//, '') || 'index.html';
 
-    if (normalizedPath.includes('//')) {
-      res.statusCode = 404;
-      res.setHeader('Content-Type', 'text/plain');
-
-      return res.end('Paths have duplicated slashes');
-    }
-
-    if (normalizedURL.pathname.includes('..')) {
-      res.statusCode = 400;
-      res.setHeader('Content-Type', 'text/plain');
-
-      return res.end('Invalid file path');
-    }
-
+    // Check for invalid paths first
     if (!normalizedURL.pathname.startsWith('/file')) {
       res.statusCode = 400;
       res.setHeader('Content-Type', 'text/plain');
@@ -31,6 +18,23 @@ function createServer() {
       return res.end('Invalid file path');
     }
 
+    // Check for path traversal attempts
+    if (normalizedURL.pathname.includes('..')) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'text/plain');
+
+      return res.end('Invalid file path');
+    }
+
+    // Check for double slashes
+    if (normalizedPath.includes('//')) {
+      res.statusCode = 404;
+      res.setHeader('Content-Type', 'text/plain');
+
+      return res.end('Paths have duplicated slashes');
+    }
+
+    // Show hint for /file endpoint
     if (!normalizedURL.pathname.startsWith('/file/')) {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
