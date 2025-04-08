@@ -17,10 +17,14 @@ function createServer() {
       return res.end('Paths have duplicated slashes');
     }
 
-    if (
-      !normalizedURL.pathname.startsWith('/file') ||
-      normalizedURL.pathname.includes('..')
-    ) {
+    if (normalizedURL.pathname.includes('..')) {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'text/plain');
+
+      return res.end('Invalid file path');
+    }
+
+    if (!normalizedURL.pathname.startsWith('/file')) {
       res.statusCode = 400;
       res.setHeader('Content-Type', 'text/plain');
 
@@ -28,6 +32,7 @@ function createServer() {
     }
 
     if (!normalizedURL.pathname.startsWith('/file/')) {
+      res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
 
       return res.end('Path should start with "/file/"');
